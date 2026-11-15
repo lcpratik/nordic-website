@@ -30,7 +30,7 @@ export async function POST(req: Request) {
   }
 
   const fields: Record<string, string> = {};
-  for (const key of ["name", "email", "country", "interest", "dates", "guests", "message", "source", "checkIn", "checkOut"]) {
+  for (const key of ["name", "email", "country", "interest", "dates", "guests", "stayLength", "message", "source", "checkIn", "checkOut"]) {
     const v = clean(body[key]);
     if (v) fields[key] = v;
   }

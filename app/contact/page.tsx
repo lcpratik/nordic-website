@@ -52,7 +52,7 @@ export default function ContactPage() {
             We aim to reply within a day. For anything urgent, WhatsApp is fastest.
           </p>
         </div>
-        <div className="bg-navy reveal" style={{ padding: "clamp(24px, 4vw, 44px)" }}>
+        <div id="enquiry" className="bg-navy reveal" style={{ padding: "clamp(24px, 4vw, 44px)", scrollMarginTop: 96 }}>
           <EnquiryForm />
         </div>
       </section>

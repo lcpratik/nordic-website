@@ -1,8 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker, { pretty, toISO } from "./DatePicker";
+
+const ENQUIRY_TYPES = [
+  { key: "general", label: "General enquiry" },
+  { key: "private", label: "Private room" },
+  { key: "bunk", label: "Bunk room" },
+  { key: "apartment", label: "Apartment or long stay" },
+  { key: "group", label: "Group stay" },
+  { key: "arrival", label: "Arrival question" },
+];
+
+const STAY_LENGTHS = ["A few nights", "About a week", "Two to four weeks", "A month or more"];
 
 /** Contact page enquiry form. Sends to /api/contact. */
 export default function EnquiryForm() {
@@ -10,6 +21,14 @@ export default function EnquiryForm() {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [picker, setPicker] = useState<"in" | "out" | null>(null);
+  const [interest, setInterest] = useState(ENQUIRY_TYPES[0].label);
+
+  // Links such as /contact?interest=apartment open the form with that enquiry type chosen.
+  useEffect(() => {
+    const key = new URLSearchParams(window.location.search).get("interest");
+    const match = ENQUIRY_TYPES.find((t) => t.key === key);
+    if (match) setInterest(match.label);
+  }, []);
   const today = toISO(new Date());
   const dayAfter = (iso: string) => toISO(new Date(new Date(iso + "T00:00").getTime() + 86400000));
 
@@ -64,17 +83,14 @@ export default function EnquiryForm() {
           <input id="c-country" name="country" autoComplete="country-name" />
         </div>
         <div className="field">
-          <label htmlFor="c-stay">Interested in</label>
-          <select id="c-stay" name="interest" defaultValue="A room">
-            <option>A room</option>
-            <option>An apartment</option>
-            <option>A group stay</option>
-            <option>Not sure yet</option>
+          <label htmlFor="c-stay">Enquiry about</label>
+          <select id="c-stay" name="interest" value={interest} onChange={(e) => setInterest(e.target.value)}>
+            {ENQUIRY_TYPES.map((t) => (
+              <option key={t.key} value={t.label}>
+                {t.label}
+              </option>
+            ))}
           </select>
-        </div>
-        <div className="field">
-          <label htmlFor="c-guests">Guests</label>
-          <input id="c-guests" name="guests" placeholder="e.g. 2 adults" />
         </div>
         <div style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16 }}>
           <div className="field">
@@ -121,9 +137,22 @@ export default function EnquiryForm() {
             value={checkIn && checkOut ? `${pretty(checkIn)} to ${pretty(checkOut)}` : checkIn ? `From ${pretty(checkIn)}` : ""}
           />
         </div>
+        <div className="field">
+          <label htmlFor="c-guests">Guests</label>
+          <input id="c-guests" name="guests" placeholder="e.g. 2 adults" />
+        </div>
+        <div className="field">
+          <label htmlFor="c-length">Expected length of stay</label>
+          <select id="c-length" name="stayLength" defaultValue="">
+            <option value="">Not sure yet</option>
+            {STAY_LENGTHS.map((l) => (
+              <option key={l}>{l}</option>
+            ))}
+          </select>
+        </div>
       </div>
       <div className="field">
-        <label htmlFor="c-msg">Message</label>
+        <label htmlFor="c-msg">Additional requirements or message</label>
         <textarea id="c-msg" name="message" rows={4} />
       </div>
       <div className="consent" style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13, lineHeight: 1.6, color: "var(--muted)" }}>

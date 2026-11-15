@@ -76,6 +76,7 @@ export default function Header() {
         </div>
       </header>
 
+      {menuOpen && <div className={styles.backdrop} onClick={() => setMenuOpen(false)} aria-hidden="true" />}
       {menuOpen && (
         <div data-lenis-prevent className={styles.menu} role="dialog" aria-modal="true" aria-label="Menu">
           <div className={styles.menuTop}>

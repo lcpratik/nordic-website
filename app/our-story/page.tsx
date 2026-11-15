@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 // Flip these to true once there are authentic reviews and real photographs.
-const SHOW_REVIEWS = false;
+const SHOW_REVIEWS = true;
 const SHOW_GALLERY = false;
 
 export default function OurStoryPage() {

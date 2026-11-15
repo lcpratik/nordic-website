@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import IconRow from "@/components/IconRow";
 import PageHero from "@/components/PageHero";
+import { site } from "@/lib/site";
 import { Button, ClosingBanner, Intro, MapEmbed, Placeholder, Split, Teasers } from "@/components/ui";
 
 export const metadata: Metadata = {
@@ -17,6 +18,11 @@ const nearby: [string, string, string][] = [
   ["Pashupatinath", "A riverside temple complex", "A short ride"],
   ["Boudhanath Stupa", "One of the largest stupas", "A short ride"],
 ];
+
+const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.mapQuery)}`;
+
+// The closing links to Stay, Our Story and Contact repeat the navigation. Flip to true to show them again.
+const SHOW_PAGE_LINKS = false;
 
 // Flip to true once the local guide is written.
 const SHOW_LOCAL_GUIDE = false;
@@ -86,7 +92,7 @@ export default function ThamelPage() {
         Thamel is where most treks begin and end. Gear up, meet your guide, then come back to a quiet room and a proper rest.
       </Split>
 
-      <section className="bg-navy">
+      <section id="nearby" className="bg-navy" style={{ scrollMarginTop: 80 }}>
         <div className="container section split" style={{ alignItems: "start" }}>
           <div className="stack reveal">
             <p className="kicker">Nearby</p>
@@ -110,6 +116,40 @@ export default function ThamelPage() {
         </div>
       </section>
 
+      <section className="container section" style={{ paddingBottom: 0 }}>
+        <div className="stack center reveal" style={{ gap: 14 }}>
+          <p className="kicker">Before you arrive</p>
+          <h2 className="h2">Getting here, and getting started</h2>
+        </div>
+      </section>
+
+      <Teasers
+        items={[
+          {
+            kicker: "Finding us",
+            title: "Paknajol",
+            tagline: "Just north of Thamel",
+            text: "Open the map for directions from wherever you are in Kathmandu.",
+            actions: <Button href={mapsUrl} small>Open in Maps</Button>,
+          },
+          {
+            kicker: "Arriving",
+            title: "Into Kathmandu",
+            tagline: "Tribhuvan International Airport",
+            text: "Most international visitors fly into Tribhuvan International Airport. Questions about getting to us? Just ask.",
+            actions: <Button href="/contact?interest=arrival#enquiry" variant="outline" small>Ask About Arrival</Button>,
+          },
+          {
+            kicker: "First time here",
+            title: "Start in Thamel",
+            tagline: "Cafes, gear shops and trek agencies",
+            text: "Thamel is the traveller\u2019s quarter of Kathmandu, with the old city just to the south.",
+            actions: <Button href="#nearby" variant="outline" small>See What&rsquo;s Nearby</Button>,
+          },
+        ]}
+      />
+
+      {SHOW_PAGE_LINKS && (
       <Teasers
         items={[
           {
@@ -123,6 +163,7 @@ export default function ThamelPage() {
           { kicker: "Contact", title: "Say hello", tagline: "Questions before you book", text: "Early enquiries, long stays and groups are all welcome.", actions: <Button href="/contact" small>Contact Us</Button> },
         ]}
       />
+      )}
 
       <ClosingBanner ctaLabel="Join the Waitlist" ctaHref="/#notify" />
     </>

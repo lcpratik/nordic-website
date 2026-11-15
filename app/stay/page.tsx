@@ -3,6 +3,7 @@ import IconRow from "@/components/IconRow";
 import PageHero from "@/components/PageHero";
 import { FaqSlider } from "@/components/Sliders";
 import { Button, Cards, ClosingBanner, Details, Intro, Placeholder, Split, Teasers } from "@/components/ui";
+import { accommodations, detailRows } from "@/lib/accommodation";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -35,45 +36,49 @@ export default function StayPage() {
         ]}
       />
 
-      <Split
-        id="rooms"
-        kicker="Rooms · Rest before the mountains"
-        title="Private Rooms"
-        media={<Placeholder label="" />}
-        actions={
-          <Button href="/contact" variant="outline">Ask About Rooms</Button>
-        }
-        extra={<Details rows={[["Room types", "Revealed soon"], ["Amenities", "Revealed soon"], ["Rates", "At opening"]]} />}
-      >
-        Simple, quiet private rooms for trekkers and travellers. A good bed, a calm space and everything you need for the road ahead.
-      </Split>
+      {accommodations.map((a, i) => (
+        <Split
+          key={a.id}
+          id={a.id}
+          kicker={a.kicker}
+          title={a.title}
+          imageSide={i % 2 === 0 ? "left" : "right"}
+          media={
+            a.photos?.[0] ? (
+              <div data-media style={{ aspectRatio: "4 / 3" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={a.photos[0]} alt={a.title} loading="lazy" />
+              </div>
+            ) : (
+              <Placeholder tone={a.tone} label="" />
+            )
+          }
+          actions={<Button href={`/contact?interest=${a.enquiry}#enquiry`} variant="outline">{a.askLabel}</Button>}
+          extra={<Details rows={detailRows(a)} />}
+        >
+          {a.description}
+        </Split>
+      ))}
 
-      <Split
-        id="bunk"
-        kicker="Rooms · On the move"
-        title="Bunk Room"
-        media={<Placeholder tone={2} label="" />}
-        imageSide="right"
-        actions={
-          <Button href="/contact" variant="outline">Ask About the Bunk Room</Button>
-        }
-        extra={<Details rows={[["Amenities", "Revealed soon"], ["Rates", "At opening"]]} />}
-      >
-        A simple bunk room for trekkers and travellers who just need a good night&rsquo;s rest before the trail.
-      </Split>
-
-      <Split
-        id="apartments"
-        kicker="Apartments · Room to live"
-        title="Apartments"
-        media={<Placeholder tone={3} label="" />}
-        actions={
-          <Button href="/contact" variant="outline">Ask About Apartments</Button>
-        }
-        extra={<Details rows={[["Layouts", "Revealed soon"], ["Amenities", "Revealed soon"], ["Weekly and monthly rates", "At opening"]]} />}
-      >
-        Bright apartments with space to cook, work and settle in. Made for families, remote workers and longer stays.
-      </Split>
+      <section className="container section">
+        <div className="stack center reveal" style={{ gap: 14, marginBottom: 36 }}>
+          <p className="kicker">How your stay works</p>
+          <h2 className="h2">Simple, from first message to arrival</h2>
+        </div>
+        <div className="grid-3" style={{ gap: 36 }}>
+          {[
+            ["01", "Plan Your Stay", "Explore our accommodation and contact Nordic with your requirements."],
+            ["02", "Prepare for Arrival", "Receive confirmed arrival details and relevant instructions before your stay."],
+            ["03", "Settle In", "Arrive and enjoy your accommodation in Kathmandu."],
+          ].map(([n, title, text]) => (
+            <div key={n} className="stack reveal" style={{ gap: 10, borderTop: "1px solid var(--ink)", paddingTop: 24 }}>
+              <p className="kicker">{n}</p>
+              <h3 className="h3" style={{ fontSize: 24 }}>{title}</h3>
+              <p className="body" style={{ fontSize: 15 }}>{text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {SHOW_GUEST_STORIES && (
         <section className="bg-navy">
@@ -90,8 +95,8 @@ export default function StayPage() {
         intro="Simple ways to plan ahead before we open."
         items={[
           { title: "Book Direct", text: `Direct booking opens before our first guests arrive in ${site.opening}. Be the first to know.`, link: "Get notified", href: "/#notify" },
-          { title: "Long Stays", text: "Planning a month or more in Kathmandu? Tell us your dates and we will be in touch.", link: "Send your dates", href: "/contact" },
-          { title: "Groups", text: "Travelling with friends or a trekking group? Let us know how many and when.", link: "Ask about groups", href: "/contact" },
+          { title: "Long Stays", text: "Planning a month or more in Kathmandu? Tell us your dates and we will be in touch.", link: "Send your dates", href: "/contact?interest=apartment#enquiry" },
+          { title: "Groups", text: "Travelling with friends or a trekking group? Let us know how many and when.", link: "Ask about groups", href: "/contact?interest=group#enquiry" },
         ]}
       />
 
