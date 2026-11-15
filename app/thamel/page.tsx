@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import IconRow from "@/components/IconRow";
 import PageHero from "@/components/PageHero";
+import { HimalayaIllustration, OldCityIllustration } from "@/components/illustrations";
 import { site } from "@/lib/site";
-import { Button, ClosingBanner, Intro, MapEmbed, Placeholder, Split, Teasers } from "@/components/ui";
+import { Button, ClosingBanner, Intro, MapEmbed, Split, Teasers } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Explore",
@@ -49,7 +50,7 @@ export default function ThamelPage() {
         ]}
       />
 
-      <Split kicker="The old city" title="Centuries of history, a short walk away" media={<Placeholder label="" />}>
+      <Split kicker="The old city" title="Centuries of history, a short walk away" media={<OldCityIllustration />}>
         Pagodas, courtyards and busy market lanes. Kathmandu’s old city is one of the most remarkable places in Asia, and it starts
         just south of Thamel.
       </Split>
@@ -73,7 +74,7 @@ export default function ThamelPage() {
         kicker="Before and after the trek"
         title="The gateway to the Himalaya"
         imageSide="right"
-        media={<Placeholder tone={3} label="" />}
+        media={<HimalayaIllustration />}
         extra={
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 20, marginTop: 18 }}>
             {[
