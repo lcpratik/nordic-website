@@ -18,13 +18,13 @@ export const site = {
     whatsapp: "+977-9860088476",
     // Digits only with country code, e.g. "9779800000000". Leave empty to hide WhatsApp links.
     whatsappLink: "9779860088476",
-    instagramHandle: "[@YOUR HANDLE]",
+    instagramHandle: "@nordicroomandapartments.np",
   },
 
   social: {
-    instagram: "https://instagram.com",
-    facebook: "https://facebook.com",
-    tiktok: "https://tiktok.com",
+    instagram: "https://www.instagram.com/nordicroomandapartments.np/",
+    facebook: "https://www.facebook.com/profile.php?id=61592636510950",
+    tiktok: "https://www.tiktok.com/@nordic.apartments",
   },
 
   // When your hero film is ready, put it in public/videos/hero.mp4 and set this to "/videos/hero.mp4".
