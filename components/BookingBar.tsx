@@ -19,7 +19,7 @@ function CalendarIcon() {
 
 /**
  * Floating booking bar in the hero.
- * Before booking opens, "Book Your Stay" shows a small "booking opens soon" card with an email signup.
+ * Before booking opens, "Join the Waitlist" shows a small "booking opens soon" card with an email signup.
  * When site.bookingUrl is set, it sends guests to the booking engine with their dates instead.
  */
 export default function BookingBar({ style }: { style?: React.CSSProperties }) {
@@ -121,7 +121,7 @@ export default function BookingBar({ style }: { style?: React.CSSProperties }) {
           </div>
         </div>
         <button type="button" className={`btn ${styles.cta}`} onClick={onBook}>
-          Book Your Stay
+          Join the Waitlist
         </button>
       </div>
     </div>

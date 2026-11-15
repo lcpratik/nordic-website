@@ -19,6 +19,8 @@ function InfoBlock({ title, children }: { title: string; children: React.ReactNo
 }
 
 export default function ContactPage() {
+  // The Instagram handle still holds a "[...]" placeholder in lib/site.ts; it shows once a real one is set.
+  const hasInstagram = !site.contact.instagramHandle.startsWith("[");
   const wa = site.contact.whatsappLink ? `https://wa.me/${site.contact.whatsappLink}` : null;
   return (
     <>
@@ -39,11 +41,13 @@ export default function ContactPage() {
             <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
             <a href={`tel:${site.contact.phone.replace(/[^+\d]/g, "")}`}>{site.contact.phone}</a>
           </InfoBlock>
-          <InfoBlock title="Social">
-            <a href={site.social.instagram} target="_blank" rel="noopener noreferrer">
-              Instagram {site.contact.instagramHandle}
-            </a>
-          </InfoBlock>
+          {hasInstagram && (
+            <InfoBlock title="Social">
+              <a href={site.social.instagram} target="_blank" rel="noopener noreferrer">
+                Instagram {site.contact.instagramHandle}
+              </a>
+            </InfoBlock>
+          )}
           <p className="small" style={{ margin: 0, borderTop: "1px solid var(--line)", paddingTop: 20, lineHeight: 1.7 }}>
             We aim to reply within a day. For anything urgent, WhatsApp is fastest.
           </p>
@@ -77,19 +81,16 @@ export default function ContactPage() {
             title: "Rooms and Apartments",
             tagline: "A quiet base in Thamel",
             text: "Simple rooms for trekkers, bright apartments for longer stays.",
-            actions: (
-              <>
-                <Button href="/stay#book" small>Book Your Stay</Button>
-                <Button href="/stay" variant="outline" small>Discover</Button>
-              </>
-            ),
+            actions: <Button href="/stay" variant="outline" small>Discover</Button>,
           },
           { kicker: "Explore", title: "Thamel", tagline: "The city at your door", text: "Temples, markets, cafes and trekking shops, all close by.", actions: <Button href="/thamel" variant="outline" small>Discover Thamel</Button> },
-          { kicker: "Social", title: "Follow along", tagline: "The house, as it is built", text: "Behind the scenes on our way to opening day.", actions: <Button href={site.social.instagram} variant="outline" small>Follow on Instagram</Button> },
+          ...(hasInstagram
+            ? [{ kicker: "Social", title: "Follow along", tagline: "The house, as it is built", text: "Behind the scenes on our way to opening day.", actions: <Button href={site.social.instagram} variant="outline" small>Follow on Instagram</Button> }]
+            : []),
         ]}
       />
 
-      <ClosingBanner />
+      <ClosingBanner ctaLabel="Join the Waitlist" ctaHref="/#notify" />
     </>
   );
 }

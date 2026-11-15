@@ -16,7 +16,7 @@ function parse(iso: string) {
   const [y, m, d] = iso.split("-").map(Number);
   return new Date(y, m - 1, d);
 }
-function pretty(iso: string) {
+export function pretty(iso: string) {
   const d = parse(iso);
   return `${d.getDate()} ${MONTHS[d.getMonth()].slice(0, 3)} ${d.getFullYear()}`;
 }
@@ -31,10 +31,15 @@ type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onChange: (iso: string) => void;
+  /** "field" looks like a form input (used on the Contact page). Default keeps the booking bar look. */
+  variant?: "inline" | "field";
+  /** Which way the calendar opens. Default is up, because the booking bar sits at the bottom of the screen. */
+  placement?: "up" | "down";
+  placeholder?: string;
 };
 
 /** Small calendar that opens above its field, so it is never cut off at the bottom of the hero. */
-export default function DatePicker({ id, label, value, min, rangeStart, open, onOpenChange, onChange }: Props) {
+export default function DatePicker({ id, label, value, min, rangeStart, open, onOpenChange, onChange, variant = "inline", placement = "up", placeholder = "Add date" }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState(() => parse(value || min));
 
@@ -79,17 +84,17 @@ export default function DatePicker({ id, label, value, min, rangeStart, open, on
       <button
         type="button"
         id={id}
-        className={`${styles.trigger} ${value ? "" : styles.empty}`}
+        className={`${styles.trigger} ${variant === "field" ? styles.fieldTrigger : ""} ${value ? "" : styles.empty}`}
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label={`${label}${value ? `: ${pretty(value)}` : ""}`}
         onClick={() => onOpenChange(!open)}
       >
-        {value ? pretty(value) : "Add date"}
+        {value ? pretty(value) : placeholder}
       </button>
 
       {open && (
-        <div className={styles.pop} role="dialog" aria-label={`Choose ${label.toLowerCase()}`}>
+        <div className={`${styles.pop} ${variant === "field" ? styles.popField : ""} ${placement === "down" ? styles.down : ""}`} role="dialog" aria-label={`Choose ${label.toLowerCase()}`}>
           <div className={styles.head}>
             <button
               type="button"

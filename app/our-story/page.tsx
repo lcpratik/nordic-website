@@ -9,6 +9,10 @@ export const metadata: Metadata = {
   description: "A Nordic idea, at home in Kathmandu. What guides Nordic Rooms & Apartments, and what our guests say.",
 };
 
+// Flip these to true once there are authentic reviews and real photographs.
+const SHOW_REVIEWS = false;
+const SHOW_GALLERY = false;
+
 export default function OurStoryPage() {
   return (
     <>
@@ -18,7 +22,6 @@ export default function OurStoryPage() {
         kicker="Our Story"
         title="Our Story and Ethos"
         subtitle="A Nordic idea, at home in Kathmandu"
-        extra={<Button href="/stay#book">Book Your Stay</Button>}
       >
         Nordic Rooms and Apartments began with a simple wish: a calm, honest place to stay in the heart of Thamel. Here is what
         guides us.
@@ -57,13 +60,28 @@ export default function OurStoryPage() {
         </div>
       </section>
 
-      <div id="reviews" style={{ scrollMarginTop: 112 }}>
-        <Reviews />
-      </div>
+      {SHOW_REVIEWS && (
+        <div id="reviews" style={{ scrollMarginTop: 112 }}>
+          <Reviews />
+        </div>
+      )}
 
       <section className="container reveal">
-        <Placeholder ratio="21 / 8" showMark={false} />
+        <Placeholder ratio="21 / 8" label="" />
       </section>
+
+      {SHOW_GALLERY && (
+      <section className="container section grid-2">
+        <figure className="reveal" style={{ margin: 0 }}>
+          <Placeholder ratio="3 / 2" label="" showMark={false} />
+          <figcaption className="small" style={{ marginTop: 12 }}>Morning light in the lounge · coming soon</figcaption>
+        </figure>
+        <figure className="reveal" style={{ margin: 0 }}>
+          <Placeholder ratio="3 / 2" tone={2} label="" showMark={false} />
+          <figcaption className="small" style={{ marginTop: 12 }}>Evenings in Thamel · coming soon</figcaption>
+        </figure>
+      </section>
+      )}
 
       <div style={{ paddingTop: 56 }}>
         <IconRow
@@ -85,7 +103,7 @@ export default function OurStoryPage() {
         ]}
       />
 
-      <ClosingBanner />
+      <ClosingBanner ctaLabel="Join the Waitlist" ctaHref="/#notify" />
     </>
   );
 }

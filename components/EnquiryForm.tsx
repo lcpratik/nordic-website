@@ -2,10 +2,16 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import DatePicker, { pretty, toISO } from "./DatePicker";
 
 /** Contact page enquiry form. Sends to /api/contact. */
 export default function EnquiryForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
+  const [picker, setPicker] = useState<"in" | "out" | null>(null);
+  const today = toISO(new Date());
+  const dayAfter = (iso: string) => toISO(new Date(new Date(iso + "T00:00").getTime() + 86400000));
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -67,12 +73,53 @@ export default function EnquiryForm() {
           </select>
         </div>
         <div className="field">
-          <label htmlFor="c-dates">Dates</label>
-          <input id="c-dates" name="dates" placeholder="e.g. Feb 2027" />
-        </div>
-        <div className="field">
           <label htmlFor="c-guests">Guests</label>
           <input id="c-guests" name="guests" placeholder="e.g. 2 adults" />
+        </div>
+        <div style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16 }}>
+          <div className="field">
+            <label htmlFor="c-checkin">Arrival date</label>
+            <DatePicker
+              id="c-checkin"
+              label="Arrival date"
+              variant="field"
+              placement="down"
+              placeholder="Choose a day"
+              value={checkIn}
+              min={today}
+              open={picker === "in"}
+              onOpenChange={(o) => setPicker(o ? "in" : null)}
+              onChange={(iso) => {
+                setCheckIn(iso);
+                if (checkOut && checkOut <= iso) setCheckOut("");
+                setPicker("out");
+              }}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="c-checkout">Departure date</label>
+            <DatePicker
+              id="c-checkout"
+              label="Departure date"
+              variant="field"
+              placement="down"
+              placeholder="Choose a day"
+              value={checkOut}
+              min={checkIn ? dayAfter(checkIn) : today}
+              rangeStart={checkIn}
+              open={picker === "out"}
+              onOpenChange={(o) => setPicker(o ? "out" : null)}
+              onChange={setCheckOut}
+            />
+          </div>
+          {/* Sent with the enquiry: exact days, plus a readable range for the email. */}
+          <input type="hidden" name="checkIn" value={checkIn} />
+          <input type="hidden" name="checkOut" value={checkOut} />
+          <input
+            type="hidden"
+            name="dates"
+            value={checkIn && checkOut ? `${pretty(checkIn)} to ${pretty(checkOut)}` : checkIn ? `From ${pretty(checkIn)}` : ""}
+          />
         </div>
       </div>
       <div className="field">

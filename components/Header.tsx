@@ -31,7 +31,8 @@ export default function Header() {
   // Pages with a dark photo hero start with a see-through header. Every other page starts solid.
   const heroPages = ["/", "/stay", "/our-story", "/thamel", "/contact"];
   const solid = scrolled || !heroPages.includes(pathname);
-  const bookHref = pathname === "/" ? "#book" : "/stay#book";
+  // Online booking is not open yet, so the header button leads to the email signup on the home page.
+  const bookHref = pathname === "/" ? "#notify" : "/#notify";
 
   return (
     <>
@@ -70,7 +71,7 @@ export default function Header() {
 
         <div className={styles.right}>
           <a href={bookHref} className="btn">
-            Book Now
+            Get Opening Updates
           </a>
         </div>
       </header>

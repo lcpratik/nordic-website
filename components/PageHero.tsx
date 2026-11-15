@@ -23,7 +23,6 @@ export default function PageHero({
           <div className={`${styles.placeholder} drift`} aria-hidden="true" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/images/mark.png" alt="" className={`${styles.bigMark} drift`} />
-          <span className={styles.soon}>Photograph coming soon</span>
         </>
       )}
       <div className={styles.shade} aria-hidden="true" />

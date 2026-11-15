@@ -152,10 +152,18 @@ html.lenis {
 .bg-navy .consent {
   color: #c4cbd1 !important;
 }
+/* Inputs keep white fields on navy, so the typed text must be dark (it inherited white). */
 .bg-navy .field input,
 .bg-navy .field select,
 .bg-navy .field textarea {
+  color: var(--ink);
   border-color: #2c353e;
+}
+.book-direct input {
+  color: var(--ink);
+}
+.bg-navy .field select option {
+  color: var(--ink);
 }
 .bg-navy .navy-quote {
   color: #ffffff;

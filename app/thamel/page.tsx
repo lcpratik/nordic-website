@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import IconRow from "@/components/IconRow";
 import PageHero from "@/components/PageHero";
-import { Button, ClosingBanner, Intro, MapEmbed, Split, Teasers } from "@/components/ui";
+import { Button, ClosingBanner, Intro, MapEmbed, Placeholder, Split, Teasers } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Explore",
@@ -9,14 +9,17 @@ export const metadata: Metadata = {
 };
 
 // TODO: replace "A short walk" / "A short ride" with real times once the address is final.
-const nearby: [string, string][] = [
-  ["Garden of Dreams", "A short walk"],
-  ["Kathmandu Durbar Square", "A short walk"],
-  ["Asan Bazaar", "A short walk"],
-  ["Swayambhunath", "A short ride"],
-  ["Pashupatinath", "A short ride"],
-  ["Boudhanath Stupa", "A short ride"],
+const nearby: [string, string, string][] = [
+  ["Garden of Dreams", "A restored neoclassical garden", "A short walk"],
+  ["Kathmandu Durbar Square", "The old royal palace square", "A short walk"],
+  ["Asan Bazaar", "A busy old market", "A short walk"],
+  ["Swayambhunath", "A hilltop stupa", "A short ride"],
+  ["Pashupatinath", "A riverside temple complex", "A short ride"],
+  ["Boudhanath Stupa", "One of the largest stupas", "A short ride"],
 ];
+
+// Flip to true once the local guide is written.
+const SHOW_LOCAL_GUIDE = false;
 
 export default function ThamelPage() {
   return (
@@ -40,7 +43,7 @@ export default function ThamelPage() {
         ]}
       />
 
-      <Split kicker="The old city" title="Centuries of history, a short walk away" actions={<Button href="/stay">Plan Your Stay</Button>}>
+      <Split kicker="The old city" title="Centuries of history, a short walk away" media={<Placeholder label="" />}>
         Pagodas, courtyards and busy market lanes. Kathmandu’s old city is one of the most remarkable places in Asia, and it starts
         just south of Thamel.
       </Split>
@@ -50,7 +53,7 @@ export default function ThamelPage() {
           {[
             ["Temples and squares", "Kathmandu Durbar Square and the old city lanes are a short walk away."],
             ["Markets", "Asan Bazaar for spices, fabric and everyday Kathmandu life."],
-            ["Our local guide", "Our own list of favourite places to eat, walk and see. Coming soon."],
+            ...(SHOW_LOCAL_GUIDE ? [["Our local guide", "Our own list of favourite places to eat, walk and see."]] : []),
           ].map(([title, text]) => (
             <div key={title} className="stack reveal" style={{ gap: 10, borderTop: "1px solid var(--ink)", paddingTop: 24 }}>
               <h3 className="h3" style={{ fontSize: 24 }}>{title}</h3>
@@ -64,8 +67,7 @@ export default function ThamelPage() {
         kicker="Before and after the trek"
         title="The gateway to the Himalaya"
         imageSide="right"
-        tone={3}
-        actions={<Button href="/stay#book">Book Your Stay</Button>}
+        media={<Placeholder tone={3} label="" />}
         extra={
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 20, marginTop: 18 }}>
             {[
@@ -95,10 +97,13 @@ export default function ThamelPage() {
             </div>
           </div>
           <div className="reveal" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", columnGap: 32, borderBottom: "1px solid #2c353e" }}>
-            {nearby.map(([place, time]) => (
+            {nearby.map(([place, about, time]) => (
               <div key={place} style={{ display: "flex", justifyContent: "space-between", gap: 16, padding: "18px 0", borderTop: "1px solid #2c353e", fontSize: 15, color: "#ffffff" }}>
-                <span>{place}</span>
-                <span style={{ color: "#aab3ba" }}>{time}</span>
+                <span style={{ display: "flex", flexDirection: "column" }}>
+                  {place}
+                  <span style={{ fontSize: 13, color: "#aab3ba" }}>{about}</span>
+                </span>
+                <span style={{ color: "#aab3ba", whiteSpace: "nowrap" }}>{time}</span>
               </div>
             ))}
           </div>
@@ -112,19 +117,14 @@ export default function ThamelPage() {
             title: "Rooms and Apartments",
             tagline: "A quiet base in Thamel",
             text: "Simple rooms for trekkers, bright apartments for longer stays.",
-            actions: (
-              <>
-                <Button href="/stay#book" small>Book Your Stay</Button>
-                <Button href="/stay" variant="outline" small>Discover</Button>
-              </>
-            ),
+            actions: <Button href="/stay" variant="outline" small>Discover</Button>,
           },
           { kicker: "Our story", title: "Simply, Nordic", tagline: "Wood, light and calm", text: "Why we built a calm house in the busiest part of town.", actions: <Button href="/our-story" variant="outline" small>Read Our Story</Button> },
           { kicker: "Contact", title: "Say hello", tagline: "Questions before you book", text: "Early enquiries, long stays and groups are all welcome.", actions: <Button href="/contact" small>Contact Us</Button> },
         ]}
       />
 
-      <ClosingBanner />
+      <ClosingBanner ctaLabel="Join the Waitlist" ctaHref="/#notify" />
     </>
   );
 }

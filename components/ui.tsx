@@ -234,14 +234,14 @@ export function MapEmbed({ height = 380 }: { height?: number }) {
 }
 
 /** Closing band at the bottom of every page. */
-export function ClosingBanner() {
+export function ClosingBanner({ ctaLabel = "Book Your Stay", ctaHref = "/stay#book" }: { ctaLabel?: string; ctaHref?: string } = {}) {
   return (
     <section className="bg-sand-2">
       <div className="container stack center reveal" style={{ maxWidth: 900, gap: 16, paddingTop: 44, paddingBottom: 44 }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/images/mark.png" alt="" style={{ width: 56, height: "auto" }} />
         <h2 className="h2" style={{ fontSize: "clamp(26px, 3vw, 34px)" }}>Nordic calm in the heart of Kathmandu</h2>
-        <Button href="/stay#book">Book Your Stay</Button>
+        <Button href={ctaHref}>{ctaLabel}</Button>
       </div>
     </section>
   );
