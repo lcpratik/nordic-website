@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { newRequestId } from "@/lib/requestId";
 
 /** Email signup used for "Be the first to know". Sends to /api/contact. */
 export default function NotifyForm({
@@ -16,19 +17,25 @@ export default function NotifyForm({
 }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const busy = useRef(false);
+  const requestId = useRef(newRequestId());
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (busy.current) return; // ignore repeated clicks or Enter presses while sending
+    busy.current = true;
     setStatus("sending");
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "notify", email, source, ...details }),
+        body: JSON.stringify({ type: "notify", email, source, requestId: requestId.current, ...details }),
       });
       setStatus(res.ok ? "done" : "error");
     } catch {
       setStatus("error");
+    } finally {
+      busy.current = false;
     }
   };
 

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { newRequestId } from "@/lib/requestId";
 import DatePicker, { pretty, toISO } from "./DatePicker";
 
 const ENQUIRY_TYPES = [
@@ -18,6 +19,8 @@ const STAY_LENGTHS = ["A few nights", "About a week", "Two to four weeks", "A mo
 /** Contact page enquiry form. Sends to /api/contact. */
 export default function EnquiryForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const busy = useRef(false);
+  const requestId = useRef(newRequestId());
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [picker, setPicker] = useState<"in" | "out" | null>(null);
@@ -34,17 +37,21 @@ export default function EnquiryForm() {
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (busy.current) return; // ignore repeated clicks or Enter presses while sending
+    busy.current = true;
     setStatus("sending");
     const data = Object.fromEntries(new FormData(e.currentTarget).entries());
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "enquiry", ...data }),
+        body: JSON.stringify({ type: "enquiry", source: "Contact page", requestId: requestId.current, ...data }),
       });
       setStatus(res.ok ? "done" : "error");
     } catch {
       setStatus("error");
+    } finally {
+      busy.current = false;
     }
   };
 
@@ -66,6 +73,8 @@ export default function EnquiryForm() {
       <h2 className="h3" style={{ fontSize: 28, lineHeight: 1.25 }}>
         Tell us how you would like to stay
       </h2>
+      {/* Spam trap: invisible to people, bots tend to fill it in. */}
+      <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
       <p className="small" style={{ margin: 0, fontSize: 13 }}>
         Fields marked * are required.
       </p>
