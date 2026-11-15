@@ -126,7 +126,7 @@ async function sendEmail(payload: Record<string, unknown>): Promise<{ ok: boolea
 // The plain-text version of every email is sent as well, so nothing depends on the HTML.
 
 const SITE_URL = (process.env.SITE_URL || "https://nordic-website-flame.vercel.app").replace(/\/$/, "");
-const C = { page: "#f6f1eb", card: "#ffffff", ink: "#26231f", muted: "#6b645d", line: "#e2d9ce", accent: "#b4583a", soft: "#fbf8f5" };
+const C = { ink: "#26231f", muted: "#6b645d", line: "#e8e0d6", accent: "#b4583a", soft: "#faf7f3" };
 const SERIF = "Georgia, 'Times New Roman', serif";
 const SANS = "Helvetica, Arial, sans-serif";
 
@@ -141,36 +141,37 @@ function submittedAt() {
 /** 2027-02-10 -> 10 February 2027 (HTML only; the plain-text email keeps the raw value). */
 function prettyDate(iso: string) {
   if (!DATE_RE.test(iso)) return iso;
-  const d = new Date(`${iso}T12:00:00Z`);
-  return new Intl.DateTimeFormat("en-GB", { timeZone: "UTC", dateStyle: "long" }).format(d);
+  return new Intl.DateTimeFormat("en-GB", { timeZone: "UTC", dateStyle: "long" }).format(new Date(`${iso}T12:00:00Z`));
 }
 
-function layout({ preheader, children }: { preheader: string; children: string }) {
+/** White, simple email shell: logo on the left, a small label on the right, then the content. */
+function layout({ preheader, tag, children }: { preheader: string; tag: string; children: string }) {
   return `<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only">
 <title>Nordic Rooms &amp; Apartments</title>
 <style>
-@media only screen and (max-width:620px){
-  .wrap{padding:16px 10px !important}
-  .px{padding-left:22px !important;padding-right:22px !important}
-  .col{display:block !important;width:100% !important;padding-right:0 !important}
-  .lbl{padding-bottom:2px !important}
-  .btn a{display:block !important}
+@media only screen and (max-width:640px){
+  .px{padding-left:20px !important;padding-right:20px !important}
+  .h1{font-size:25px !important}
+  .date{font-size:16px !important}
 }
 </style></head>
-<body style="margin:0;padding:0;background:${C.page};-webkit-text-size-adjust:100%">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:${C.page}">${escapeHtml(preheader)}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.page}"><tr><td align="center" class="wrap" style="padding:32px 16px">
-  <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px">
-    <tr><td align="center" style="padding:4px 0 22px">
-      <img src="${SITE_URL}/images/logo.png" width="110" alt="NORDIC" style="display:block;width:110px;height:auto;border:0;font-family:${SERIF};font-size:18px;letter-spacing:3px;color:${C.ink}">
-    </td></tr>
-    <tr><td class="px" style="background:${C.card};border-top:3px solid ${C.accent};padding:34px 40px 30px;font-family:${SANS};font-size:15px;line-height:1.6;color:${C.ink}">
+<body style="margin:0;padding:0;background:#ffffff;-webkit-text-size-adjust:100%">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#ffffff">${escapeHtml(preheader)}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff"><tr><td align="center">
+  <table role="presentation" width="620" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:620px">
+    <tr><td class="px" style="padding:30px 32px 0;font-family:${SANS};font-size:15px;line-height:1.6;color:${C.ink}">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom:1px solid ${C.line}"><tr>
+        <td align="left" valign="middle" style="padding-bottom:16px">
+          <img src="${SITE_URL}/images/logo.png" width="74" alt="NORDIC" style="display:block;width:74px;height:auto;border:0;font-family:${SERIF};font-size:15px;letter-spacing:3px;color:${C.ink}">
+        </td>
+        <td align="right" valign="middle" style="padding-bottom:16px;font-family:${SANS};font-size:11px;font-weight:bold;letter-spacing:2.5px;text-transform:uppercase;color:${C.accent}">${escapeHtml(tag)}</td>
+      </tr></table>
 ${children}
     </td></tr>
-    <tr><td align="center" style="padding:20px 10px 4px;font-family:${SANS};font-size:12px;line-height:1.6;color:${C.muted}">
+    <tr><td class="px" style="padding:6px 32px 32px;font-family:${SANS};font-size:12px;line-height:1.6;color:${C.muted}">
       Nordic Rooms &amp; Apartments &middot; Kathmandu, Nepal
     </td></tr>
   </table>
@@ -178,100 +179,110 @@ ${children}
 </body></html>`;
 }
 
-const label = (t: string) =>
-  `<p style="margin:0 0 10px;font-family:${SANS};font-size:11px;font-weight:bold;letter-spacing:2.5px;text-transform:uppercase;color:${C.accent}">${escapeHtml(t)}</p>`;
-const heading = (t: string) =>
-  `<h1 style="margin:0 0 22px;font-family:${SERIF};font-weight:normal;font-size:26px;line-height:1.25;color:${C.ink}">${escapeHtml(t)}</h1>`;
-
-/** Label / value rows with subtle dividers. `html` values are already safe. */
-function rowsTable(rows: { label: string; value: string; html?: boolean }[]) {
-  const body = rows
-    .map(
-      (r) => `<tr>
-  <td class="col lbl" width="150" valign="top" style="padding:11px 14px 11px 0;border-top:1px solid ${C.line};font-family:${SANS};font-size:13px;color:${C.muted}">${escapeHtml(r.label)}</td>
-  <td class="col" valign="top" style="padding:11px 0;border-top:1px solid ${C.line};font-family:${SANS};font-size:15px;color:${C.ink}">${r.html ? r.value : escapeHtml(r.value)}</td>
-</tr>`
-    )
-    .join("\n");
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom:1px solid ${C.line}">\n${body}\n</table>`;
-}
-
+const h1 = (t: string) =>
+  `<h1 class="h1" style="margin:26px 0 6px;font-family:${SERIF};font-weight:normal;font-size:30px;line-height:1.2;color:${C.ink}">${escapeHtml(t)}</h1>`;
+const small = (t: string) =>
+  `<p style="margin:22px 0 6px;font-family:${SANS};font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:${C.muted}">${escapeHtml(t)}</p>`;
 const mailLink = (email: string) =>
   `<a href="mailto:${escapeHtml(email)}" style="color:${C.accent};text-decoration:underline">${escapeHtml(email)}</a>`;
 
+/** Simple "label  value" lines with no dividers. `html` values are already safe. */
+function lines(rows: { label: string; value: string; html?: boolean }[], muted = false) {
+  const size = muted ? 13 : 15;
+  const color = muted ? C.muted : C.ink;
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%">${rows
+    .map(
+      (r) =>
+        `<tr><td valign="top" width="120" style="padding:3px 12px 3px 0;font-family:${SANS};font-size:${size}px;color:${C.muted}">${escapeHtml(r.label)}</td><td valign="top" style="padding:3px 0;font-family:${SANS};font-size:${size}px;color:${color}">${r.html ? r.value : escapeHtml(r.value)}</td></tr>`
+    )
+    .join("")}</table>`;
+}
+
+/** Arrival and departure side by side. */
+function dateBoxes(items: { label: string; value: string }[]) {
+  if (!items.length) return "";
+  const w = Math.floor(100 / items.length);
+  const cells = items
+    .map(
+      (d, i) =>
+        `<td width="${w}%" valign="top" style="padding:${i === 0 ? "0 6px 0 0" : "0 0 0 6px"}"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.soft};border:1px solid ${C.line};border-radius:4px"><tr><td style="padding:12px 14px"><div style="font-family:${SANS};font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:${C.muted}">${escapeHtml(d.label)}</div><div class="date" style="padding-top:4px;font-family:${SERIF};font-size:18px;line-height:1.3;color:${C.ink}">${escapeHtml(d.value)}</div></td></tr></table></td>`
+    )
+    .join("");
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:20px 0 0"><tr>${cells}</tr></table>`;
+}
+
 function hotelEmail(kind: Kind, fields: Fields) {
   const title = kind === "enquiry" ? "New Guest Enquiry — Nordic" : "New Waitlist Signup — Nordic";
+
+  // Plain-text version: every submitted field, labelled.
   const order: (keyof typeof LIMITS)[] = ["name", "email", "interest", "country", "checkIn", "checkOut", "dates", "guests", "stayLength", "message", "source"];
   const plain = order.filter((k) => fields[k]).map((k) => [LABELS[k], fields[k] as string] as const);
   plain.push(["Submitted", submittedAt()]);
   const text = `${title}\n\n${plain.map(([l, v]) => (l === "Message" ? `${l}:\n${v}` : `${l}: ${v}`)).join("\n")}\n`;
 
-  // HTML rows (everything submitted is shown; message gets its own block)
-  const rows: { label: string; value: string; html?: boolean }[] = [];
-  const add = (k: keyof typeof LIMITS, fmt?: (v: string) => string) => {
-    if (fields[k]) rows.push({ label: LABELS[k], value: fmt ? fmt(fields[k] as string) : (fields[k] as string) });
-  };
-  if (kind === "enquiry") {
-    add("name");
-    if (fields.email) rows.push({ label: LABELS.email, value: mailLink(fields.email), html: true });
-    add("interest");
-    add("country");
-    add("checkIn", prettyDate);
-    add("checkOut", prettyDate);
-    add("dates");
-    add("guests");
-    add("stayLength");
-    add("source");
-  } else {
-    if (fields.email) rows.push({ label: LABELS.email, value: mailLink(fields.email), html: true });
-    add("source");
-    add("checkIn", prettyDate);
-    add("checkOut", prettyDate);
-    add("guests");
-    add("name");
-  }
-  rows.push({ label: "Submitted", value: `${nepalTime()} (Nepal time)` });
-
+  const received = `${nepalTime()} (Nepal time)`;
   let children: string;
+  let preheader: string;
+
   if (kind === "enquiry") {
+    const summary = [fields.interest, fields.guests, fields.stayLength].filter(Boolean).join(" · ");
+    const dates = [
+      fields.checkIn ? { label: "Arrival", value: prettyDate(fields.checkIn) } : null,
+      fields.checkOut ? { label: "Departure", value: prettyDate(fields.checkOut) } : null,
+    ].filter((d): d is { label: string; value: string } => !!d);
+
+    const contact: { label: string; value: string; html?: boolean }[] = [];
+    if (fields.email) contact.push({ label: "Email", value: mailLink(fields.email), html: true });
+    if (fields.country) contact.push({ label: "Country", value: fields.country });
+
+    const extra: { label: string; value: string }[] = [];
+    if (fields.dates) extra.push({ label: "Dates (as written)", value: fields.dates });
+    if (fields.source) extra.push({ label: "Sent from", value: fields.source });
+    extra.push({ label: "Received", value: received });
+
     const subject = encodeURIComponent("Re: Your enquiry to Nordic Rooms & Apartments");
-    const message = fields.message
-      ? `<p style="margin:26px 0 8px;font-family:${SANS};font-size:11px;font-weight:bold;letter-spacing:2.5px;text-transform:uppercase;color:${C.muted}">Message</p>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background:${C.soft};border-left:3px solid ${C.accent};padding:16px 18px;font-family:${SANS};font-size:15px;line-height:1.65;color:${C.ink}">${escapeHtml(fields.message).replace(/\n/g, "<br>")}</td></tr></table>`
-      : "";
-    children = `${label("New guest enquiry")}
-${heading("A new message from your guest.")}
-${rowsTable(rows)}
-${message}
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:28px 0 6px"><tr><td class="btn" bgcolor="${C.accent}" style="background:${C.accent};border-radius:4px"><a href="mailto:${escapeHtml(fields.email || "")}?subject=${subject}" style="display:inline-block;padding:13px 26px;font-family:${SANS};font-size:15px;color:#ffffff;text-decoration:none">Reply to Guest</a></td></tr></table>
-<p style="margin:14px 0 0;font-family:${SANS};font-size:13px;color:${C.muted}">You can also reply to this email. It goes straight to the guest.</p>`;
+    children = `${h1(fields.name || "A guest")}
+${summary ? `<p style="margin:0;font-family:${SANS};font-size:15px;color:${C.muted}">${escapeHtml(summary)}</p>` : ""}
+${dateBoxes(dates)}
+${small("Contact")}
+${lines(contact)}
+${fields.message ? `${small("Message")}<p style="margin:0;font-family:${SANS};font-size:15px;line-height:1.65;color:${C.ink}">${escapeHtml(fields.message).replace(/\n/g, "<br>")}</p>` : ""}
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:26px 0 22px"><tr><td bgcolor="${C.accent}" style="background:${C.accent};border-radius:3px"><a href="mailto:${escapeHtml(fields.email || "")}?subject=${subject}" style="display:inline-block;padding:10px 22px;font-family:${SANS};font-size:14px;color:#ffffff;text-decoration:none">Reply to Guest</a></td></tr></table>
+<div style="border-top:1px solid ${C.line};padding-top:12px">${lines(extra, true)}</div>`;
+    preheader = `New enquiry from ${fields.name || "a guest"}`;
   } else {
-    children = `<h1 style="margin:0 0 20px;font-family:${SERIF};font-weight:normal;font-size:22px;letter-spacing:3px;line-height:1.3;color:${C.ink}">NEW WAITLIST SIGNUP</h1>
-${rowsTable(rows)}`;
+    const rows: { label: string; value: string; html?: boolean }[] = [];
+    if (fields.name) rows.push({ label: "Name", value: fields.name });
+    if (fields.source) rows.push({ label: "Signed up from", value: fields.source });
+    if (fields.checkIn) rows.push({ label: "Arrival", value: prettyDate(fields.checkIn) });
+    if (fields.checkOut) rows.push({ label: "Departure", value: prettyDate(fields.checkOut) });
+    if (fields.guests) rows.push({ label: "Guests", value: fields.guests });
+    rows.push({ label: "Received", value: received });
+    children = `${h1(fields.email || "New signup")}
+<p style="margin:0 0 14px;font-family:${SANS};font-size:15px;color:${C.muted}">Joined the waitlist.</p>
+${lines(rows)}`;
+    preheader = `${fields.email || "Someone"} joined the waitlist`;
   }
-  const preheader = kind === "enquiry" ? `New enquiry from ${fields.name || "a guest"}` : `${fields.email || "Someone"} joined the waitlist`;
-  return { subject: title, text, html: layout({ preheader, children }) };
+  return { subject: title, text, html: layout({ preheader, tag: kind === "enquiry" ? "Guest Enquiry" : "Waitlist Signup", children }) };
 }
 
 function guestEmail(kind: Kind, name: string) {
   const sign = "Nordic Rooms & Apartments\nKathmandu, Nepal";
   if (kind === "enquiry") {
     const text = `Hello ${name},\n\nThank you for contacting Nordic Rooms & Apartments.\n\nWe have received your message and will get back to you as soon as possible.\n\n${sign}\n`;
-    const children = `${label("Message received")}
-${heading(`Hello ${name},`)}
-<p style="margin:0 0 14px">Thank you for contacting Nordic Rooms &amp; Apartments.</p>
-<p style="margin:0 0 26px">We have received your message and will get back to you as soon as possible.</p>
-<p style="margin:0;padding-top:18px;border-top:1px solid ${C.line};font-family:${SERIF};font-size:16px;line-height:1.5;color:${C.ink}">Nordic Rooms &amp; Apartments<br><span style="font-family:${SANS};font-size:13px;color:${C.muted}">Kathmandu, Nepal</span></p>`;
-    return { subject: "We received your message — Nordic Rooms & Apartments", text, html: layout({ preheader: "We received your message and will reply soon.", children }) };
+    const children = `${h1(`Hello ${name},`)}
+<p style="margin:14px 0 12px;font-family:${SANS};font-size:15px">Thank you for contacting Nordic Rooms &amp; Apartments.</p>
+<p style="margin:0 0 22px;font-family:${SANS};font-size:15px">We have received your message and will get back to you as soon as possible.</p>
+<p style="margin:0 0 6px;font-family:${SERIF};font-size:16px;color:${C.ink}">Nordic Rooms &amp; Apartments</p>`;
+    return { subject: "We received your message — Nordic Rooms & Apartments", text, html: layout({ preheader: "We received your message and will reply soon.", tag: "Message received", children }) };
   }
   const text = `Hello,\n\nThank you for your interest in Nordic Rooms & Apartments.\n\nYou are on our waitlist. We open in ${site.opening}, and we will email you with opening updates. This is not a reservation, and no dates or availability are confirmed yet.\n\n${sign}\n`;
-  const children = `${label("Waitlist")}
-${heading("You are on the list.")}
-<p style="margin:0 0 14px">Thank you for your interest in Nordic Rooms &amp; Apartments.</p>
-<p style="margin:0 0 14px">We open in ${escapeHtml(site.opening)}, and we will email you with opening updates.</p>
-<p style="margin:0 0 26px;font-size:13px;color:${C.muted}">This is not a reservation, and no dates or availability are confirmed yet.</p>
-<p style="margin:0;padding-top:18px;border-top:1px solid ${C.line};font-family:${SERIF};font-size:16px;line-height:1.5;color:${C.ink}">Nordic Rooms &amp; Apartments<br><span style="font-family:${SANS};font-size:13px;color:${C.muted}">Kathmandu, Nepal</span></p>`;
-  return { subject: "You are on the waitlist — Nordic Rooms & Apartments", text, html: layout({ preheader: "You are on the Nordic waitlist.", children }) };
+  const children = `${h1("You are on the list.")}
+<p style="margin:14px 0 12px;font-family:${SANS};font-size:15px">Thank you for your interest in Nordic Rooms &amp; Apartments.</p>
+<p style="margin:0 0 12px;font-family:${SANS};font-size:15px">We open in ${escapeHtml(site.opening)}. We will email you with opening updates.</p>
+<p style="margin:0 0 22px;font-family:${SANS};font-size:13px;color:${C.muted}">This is not a reservation. No dates or availability are confirmed yet.</p>
+<p style="margin:0 0 6px;font-family:${SERIF};font-size:16px;color:${C.ink}">Nordic Rooms &amp; Apartments</p>`;
+  return { subject: "You are on the waitlist — Nordic Rooms & Apartments", text, html: layout({ preheader: "You are on the Nordic waitlist.", tag: "Waitlist", children }) };
 }
 
 /* ---------- handler ---------- */
