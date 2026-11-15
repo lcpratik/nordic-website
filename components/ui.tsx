@@ -233,15 +233,16 @@ export function MapEmbed({ height = 380 }: { height?: number }) {
   );
 }
 
-/** Closing band at the bottom of every page. */
-export function ClosingBanner({ ctaLabel = "Book Your Stay", ctaHref = "/stay#book" }: { ctaLabel?: string; ctaHref?: string } = {}) {
+/** Quiet closing note above the footer, with a simple waitlist link. */
+export function ClosingBanner({ ctaLabel = "Join the Waitlist", ctaHref = "/#notify" }: { ctaLabel?: string; ctaHref?: string } = {}) {
   return (
     <section className="bg-sand-2">
-      <div className="container stack center reveal" style={{ maxWidth: 900, gap: 16, paddingTop: 44, paddingBottom: 44 }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/mark.png" alt="" style={{ width: 56, height: "auto" }} />
-        <h2 className="h2" style={{ fontSize: "clamp(26px, 3vw, 34px)" }}>Nordic calm in the heart of Kathmandu</h2>
-        <Button href={ctaHref}>{ctaLabel}</Button>
+      <div className="container stack center reveal" style={{ maxWidth: 720, gap: 12, paddingTop: 52, paddingBottom: 52 }}>
+        <h2 className="h2" style={{ fontSize: "clamp(26px, 3vw, 34px)" }}>Your stay in Kathmandu starts here.</h2>
+        <p className="body" style={{ fontSize: 15 }}>We open in {site.opening}. Leave your email and be the first to know.</p>
+        <Link href={ctaHref} className="arrow-link">
+          {ctaLabel} <span aria-hidden="true">&rarr;</span>
+        </Link>
       </div>
     </section>
   );
