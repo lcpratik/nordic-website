@@ -1,0 +1,135 @@
+.wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 28px;
+  z-index: 5;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.opening {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  padding-left: 0.32em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.bar {
+  width: 100%;
+  max-width: 760px;
+  background: #ffffff;
+  color: var(--ink);
+  border-radius: 32px;
+  padding: 7px 7px 7px 22px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  box-shadow: 0 12px 40px rgba(20, 16, 12, 0.12);
+}
+
+.cell {
+  flex: 1 1 150px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.fieldBox {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+.fieldBox label {
+  font-size: 11px;
+  color: var(--terracotta-text);
+}
+.fieldBox input,
+.fieldBox select {
+  border: none;
+  padding: 0;
+  background: transparent;
+  font-size: 13px;
+  color: var(--ink);
+  min-height: 22px;
+  width: 100%;
+}
+
+.sep {
+  color: #b5aca2;
+  font-size: 12px;
+}
+
+.cta {
+  min-height: 40px;
+  padding: 0 22px;
+  font-size: 14px;
+}
+
+.card {
+  width: 100%;
+  max-width: 600px;
+  background: #ffffff;
+  color: var(--ink);
+  border-radius: 24px;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 12px 40px rgba(20, 16, 12, 0.14);
+}
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+.cardTitle {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: 22px;
+}
+.cardText {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.x {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--muted);
+}
+
+@media (max-width: 860px) {
+  .wrap {
+    bottom: 20px;
+    padding: 0 14px;
+  }
+  .bar {
+    border-radius: 24px;
+    padding: 16px;
+  }
+  .sep {
+    display: none;
+  }
+  .cell {
+    flex: 1 1 100%;
+  }
+  .cta {
+    width: 100%;
+  }
+}

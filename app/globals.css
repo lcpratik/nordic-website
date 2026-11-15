@@ -1,0 +1,667 @@
+/* ============================================================
+   Nordic Rooms & Apartments · global styles
+   Colours, fonts and shared building blocks live here.
+   ============================================================ */
+
+:root {
+  --ink: #26231f;
+  --ink-soft: #4a443e;
+  --muted: #5f5852;
+  --line: #e2d9ce;
+  --line-strong: #cfc5b8;
+  --white: #ffffff;
+  --cream: #fbf8f5;
+  --sand: #f6f1eb;
+  --sand-2: #f1eae1;
+  --stone: #e6ded4;
+  --stone-2: #ede6dd;
+  --stone-3: #e1d8cc;
+  --hero: #4a443e;
+  --terracotta: #b4583a;
+  --terracotta-text: #a9502f;
+
+  --font-display: "Gilda Display", Georgia, serif;
+  --font-humanist: "Belleza", Optima, Candara, "Gill Sans", sans-serif;
+  --font-body: "Figtree", system-ui, -apple-system, sans-serif;
+
+  --container: 1240px;
+  --header-h: 68px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--ink);
+}
+a:hover {
+  color: var(--terracotta-text);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--terracotta);
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Lenis handles smooth scrolling; native smooth would fight it. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+html.lenis {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+[data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* ---------- layout ---------- */
+
+.container {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.section {
+  padding-top: 56px;
+  padding-bottom: 56px;
+}
+
+.bg-sand {
+  background: var(--sand);
+}
+.bg-sand-2 {
+  background: var(--sand-2);
+}
+.bg-navy {
+  background: #1a2027;
+  color: #ffffff;
+}
+.bg-navy .kicker {
+  color: #aab3ba;
+  font-family: var(--font-humanist);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+}
+.bg-navy .link,
+.bg-navy a {
+  color: #ffffff;
+}
+.bg-navy a:hover {
+  color: #f0b79f;
+}
+.bg-navy .h2,
+.bg-navy .h3 {
+  color: #ffffff;
+  font-family: var(--font-humanist);
+}
+.bg-navy p,
+.bg-navy .small,
+.bg-navy .body {
+  color: #c4cbd1;
+}
+.bg-navy .field label,
+.bg-navy .consent {
+  color: #c4cbd1 !important;
+}
+.bg-navy .field input,
+.bg-navy .field select,
+.bg-navy .field textarea {
+  border-color: #2c353e;
+}
+.bg-navy .navy-quote {
+  color: #ffffff;
+}
+.navy-quote {
+  margin: 0;
+  font-family: var(--font-humanist);
+  font-size: clamp(24px, 3vw, 32px);
+  line-height: 1.35;
+  color: #ffffff;
+}
+.bg-cream {
+  background: var(--cream);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 48px;
+  align-items: center;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.center {
+  text-align: center;
+  align-items: center;
+}
+
+/* ---------- type ---------- */
+
+.kicker {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terracotta-text);
+}
+
+.h1,
+.h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(28px, 3vw, 36px);
+  line-height: 1.12;
+}
+
+.h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.subhead {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--ink-soft);
+}
+
+.lead {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.body {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.small {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.link {
+  font-size: 14px;
+  text-underline-offset: 6px;
+}
+
+/* ---------- buttons ---------- */
+
+.btn,
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn {
+  background: var(--terracotta);
+  color: var(--white);
+  border: 1px solid var(--terracotta);
+}
+.btn:hover {
+  background: #9e4a2f;
+  color: var(--white);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
+.btn-outline:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.btn-sm {
+  min-height: 36px;
+  padding: 0 16px;
+  font-size: 13px;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.round-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--ink);
+}
+.round-btn:hover {
+  border-color: var(--ink);
+}
+
+/* ---------- home: dark "book direct" block ---------- */
+
+.book-direct {
+  --navy: #1a2027;
+  background: var(--navy);
+  color: #ffffff;
+}
+.book-direct .kicker {
+  color: #aab3ba;
+  font-family: var(--font-humanist);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+}
+.book-direct .h2 {
+  font-family: var(--font-humanist);
+  font-weight: 400;
+  color: #ffffff;
+}
+.book-direct .body {
+  color: #c4cbd1;
+}
+.book-direct .ph {
+  background: #232c35;
+  color: #8b959d;
+}
+.book-direct .notify-msg {
+  color: #f0b79f !important;
+}
+
+/* ---------- home: sleep section ---------- */
+
+.sleep-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.1fr);
+  gap: 56px;
+  align-items: start;
+}
+.sleep-intro {
+  position: sticky;
+  top: calc(var(--header-h) + 32px);
+}
+.sleep-list {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.sleep-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: center;
+}
+@media (max-width: 960px) {
+  .sleep-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+  .sleep-intro {
+    position: static;
+  }
+}
+@media (max-width: 640px) {
+  .sleep-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+
+/* ---------- FAQ accordion ---------- */
+
+.faq-title {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.faq-item {
+  border-bottom: 1px solid var(--line);
+}
+.faq-q {
+  margin: 0;
+  font-weight: 400;
+}
+.faq-q button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 26px 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 19px;
+  line-height: 1.35;
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+.faq-q button:hover,
+.faq-item.is-open .faq-q button {
+  color: var(--ink);
+}
+.faq-icon {
+  position: relative;
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  color: var(--ink);
+}
+.faq-icon::before,
+.faq-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1.5px;
+  margin-top: -0.75px;
+  background: currentColor;
+  transition: transform 0.3s ease;
+}
+.faq-icon::after {
+  transform: rotate(90deg);
+}
+.faq-item.is-open .faq-icon::after {
+  transform: rotate(0deg);
+}
+.faq-a {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s ease;
+}
+.faq-a > div {
+  overflow: hidden;
+}
+.faq-item.is-open .faq-a {
+  grid-template-rows: 1fr;
+}
+.faq-a .body {
+  padding: 0 4px 26px;
+  max-width: 680px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq-a,
+  .faq-icon::before,
+  .faq-icon::after {
+    transition: none;
+  }
+}
+
+/* ---------- icon rows ---------- */
+
+.icon-row svg {
+  width: 84px;
+  height: auto;
+}
+
+/* ---------- placeholders (until real photos arrive) ---------- */
+
+.ph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: var(--stone);
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 16px;
+}
+.ph img {
+  width: 64px;
+  height: auto;
+  opacity: 0.3;
+}
+
+/* ---------- details list ---------- */
+
+.details {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.details > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+  font-size: 15px;
+}
+.details > div > span:last-child {
+  color: var(--muted);
+}
+
+/* ---------- forms ---------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.field label {
+  font-size: 13px;
+  color: var(--muted);
+}
+.field input,
+.field select,
+.field textarea {
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid #d8cfc5;
+  background: var(--white);
+  font-size: 15px;
+  border-radius: 0;
+}
+.field textarea {
+  padding: 12px 14px;
+  resize: vertical;
+}
+
+.pill-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.pill-form input {
+  flex: 1 1 220px;
+  min-height: 46px;
+  padding: 0 16px;
+  border: 1px solid #d8cfc5;
+  border-radius: 999px;
+  background: var(--white);
+  font-size: 15px;
+}
+
+/* ---------- scroll motion (switched on by the "motion" class, see ScrollEffects) ---------- */
+
+:root {
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes nordicRise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* A. Text and blocks: fade up, 850ms */
+html.motion .reveal:not(.reveal-group):not(.reveal-wrapper):not(.is-in) {
+  opacity: 0;
+}
+html.motion .reveal:not(.reveal-group):not(.reveal-wrapper).is-in {
+  animation: nordicRise 0.85s var(--ease-out) backwards;
+}
+
+/* D. Groups: each child enters 120ms after the one before it */
+html.motion .reveal-group:not(.is-in) > * {
+  opacity: 0;
+}
+html.motion .reveal-group.is-in > * {
+  animation: nordicRise 0.85s var(--ease-out) backwards;
+  animation-delay: calc(var(--i, 0) * 120ms);
+}
+
+/* B. Photos: revealed through a mask from the top, with a slow zoom out */
+html.motion .ph,
+html.motion [data-media] {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.18, 1);
+}
+html.motion .ph.is-in,
+html.motion [data-media].is-in {
+  clip-path: inset(0 0 0 0);
+}
+[data-media] {
+  overflow: hidden;
+}
+[data-media] img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+}
+html.motion [data-media] img {
+  scale: 1.2;
+  transition: scale 1.6s var(--ease-out);
+}
+html.motion [data-media].is-in img {
+  scale: 1.1;
+}
+
+@keyframes nordicDrift {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  50% {
+    transform: scale(1.08) translate(-2%, -1%);
+  }
+  100% {
+    transform: scale(1) translate(0, 0);
+  }
+}
+
+.drift {
+  animation: nordicDrift 24s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .drift {
+    animation: none !important;
+  }
+}
+
+/* ---------- small screens ---------- */
+
+@media (max-width: 860px) {
+  :root {
+    --header-h: 64px;
+  }
+  .container {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+  .section {
+    padding-top: 44px;
+    padding-bottom: 44px;
+  }
+  .split {
+    gap: 32px;
+  }
+}

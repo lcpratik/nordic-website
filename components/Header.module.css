@@ -1,0 +1,179 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: var(--header-h);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  padding: 0 48px;
+  transition: background 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.clear {
+  background: transparent;
+  color: #ffffff;
+}
+
+.solid {
+  background: var(--cream);
+  color: var(--ink);
+  box-shadow: 0 1px 0 #ece5dd;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.burger {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font-size: 14px;
+}
+.links a {
+  color: inherit;
+  text-decoration: none;
+}
+.links a:hover,
+.links .active {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+.solid .links .active {
+  color: var(--terracotta-text);
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: inherit;
+  text-decoration: none;
+}
+.brand:hover {
+  color: inherit;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.42em;
+  padding-left: 0.42em;
+  line-height: 1;
+  transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+.mark {
+  width: 44px;
+  height: auto;
+  transition: width 0.3s ease, filter 0.3s ease;
+}
+
+/* At the top: white wordmark and white mark. Scrolled: mark only, dark. */
+.clear .mark {
+  filter: invert(1);
+}
+.solid .wordmark {
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+}
+.solid .mark {
+  width: 48px;
+}
+
+.right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Full screen menu */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: var(--cream);
+  color: var(--ink);
+  padding: 32px 64px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  overflow-y: auto;
+}
+.menuTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.menuLogo {
+  height: 64px;
+  width: auto;
+}
+.close {
+  min-height: 44px;
+  padding: 0 8px;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  cursor: pointer;
+}
+.menuLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--font-display);
+  font-size: clamp(36px, 6vw, 56px);
+  line-height: 1.25;
+}
+.menuLinks a {
+  text-decoration: none;
+}
+.menu > p {
+  margin-top: auto;
+}
+
+@media (max-width: 860px) {
+  .header {
+    padding: 0 18px;
+  }
+  .links {
+    display: none;
+  }
+  .wordmark {
+    font-size: 15px;
+  }
+  .mark {
+    width: 40px;
+  }
+  .solid .mark {
+    width: 42px;
+  }
+  .right :global(.btn) {
+    min-height: 40px;
+    padding: 0 16px;
+    font-size: 14px;
+  }
+  .menu {
+    padding: 24px 22px 40px;
+  }
+}
